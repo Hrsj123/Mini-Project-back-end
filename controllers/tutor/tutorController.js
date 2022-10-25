@@ -1,81 +1,71 @@
-// --------------------- DB ------------------------
-const data = {
-    subjects: require('../../model/subjects.json'),
-    setSubject: function(data) { 
-        this.subjects = data;
-    }
-};
+const Subject = require('../../model/Subject')
+
 // -------------------------------------------------
 // A single teacter exists!
 
+/* To write to file system or create logs
 const path = require('path');
 const fsPromises = require('fs').promises;
+*/
 
-const getAllSubjects = (req, res) => {      // get
-    if (Object.keys(data.subjects).length === 0) return res.json({ 'message': 'No subjects created yet!' });
-    res.json(data.subjects);                                // Sends all the subjects in the db
+const getAllSubjects = async (req, res) => {      // get
+    // if (Object.keys(data.subjects).length === 0) return res.json({ 'message': 'No subjects created yet!' });
+    const subject = await Subject.find();
+    if(!subject) return res.status(204).json({ 'message': 'No subjects found!' });
+    res.json(subject);                                // Sends all the subjects in the db
 }
 
 const createSubject = async (req, res) => {       // post
-    const newSubject = {
-        id: data.subjects[data.subjects.length - 1] + 1 || 1,
-        subName: req.body.subName,
-        totalMarks: req.body.totMarks
+    if (!req.body?.name || !req.body?.totalMarks) {
+        return res.status(400).json({ 'messag': 'Both Subject name and total marks are required!' });
     }
 
-    const duplicateSubject = data.subjects.find(sub => sub.subName === req.body.subName);
-    if (duplicateSubject) return res.status(400).json({ 'message': `The subject named ${req.body.subName} already exists!` });
-    // Update DB (json)!                     
     try {
-        data.setSubject([...data.subjects, newSubject]);
-        await fsPromises.writeFile(
-            path.join(__dirname, '..', '..', 'model', 'subjects.json'),
-            JSON.stringify(data.subjects)
-        );
-    } catch (error) {
-        console.log(error);
-    }
+        const result = await Subject.create({
+            name: req.body.name,
+            totalMarks: req.body.totalMarks
+        });
 
-    res.status(201).json(data.subjects);                                                    // Sends all the subjects in the db
+        res.status(201).json(result);                                                    // Sends all the subjects in the db
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 const updateSubject = async (req, res) => {       // put
-    const subject = data.subjects.find(sub => sub.id === parseInt(req.body.id));
-    if (!subject) {
+    if (!req.body?.id) return res.status(400).json({ 'message': 'An id parameter is required!' });
+
+    const sub = await Subject.findOne({ _id: req.body.id }).exec();
+    if (!sub) {
         return res.Status(400).json({ 'message': `The subject with id: ${req.body.id} does not exist!` });
     }
-    const otherSubjects = data.subjects.find(sub => sub.id !== parseInt(req.body.id));
-    if (req.body.subName) subject.subName = req.body.sub;
-    if (req.body.totalMarks) subject.totalMarks = req.body.totalMarks;
-    const unsortedArray = [...otherSubjects, subject];
-    // Update DB (json)!
-    try {
-        data.setSubject(unsortedArray.sort((a, b) => a.id > b.id ? 1: a.id < b.id ? -1 : 0)); // Arrange the order of subjects!
-        await fsPromises.writeFile(
-            path.join(__dirname, '..', '..', 'model', 'subjects.sjon'),
-            JSON.stringify(data.subjects)
-        );
-    } catch (error) {
-        console.log(error);
-    }
 
-    res.json(data.subjects);                                // Sends all the subjects in the db
+    if (req.body?.name) sub.name = req.body.name;
+    if (req.body.totalMarks) sub.totalMarks = req.body.totalMarks;
+
+    try {
+        const result = await sub.save();
+        res.json(result);                                // Sends all the subjects in the db
+    } catch (error) {
+        console.error(error);
+    }
 }
 
-const removeSubjects = (req, res) => {      // delete
-    const subject = data.subjects.find(sub => sub.id === parseInt(req.body.id));
-    if (!subject) {
-        return res.status(400).json({ 'message': `The subject with id: ${req.body.id} does not exists!` });
+const removeSubjects = async (req, res) => {      // delete
+    if (!req.body?.id) return res.status(400).json({ 'message': 'An ID parameter is required!' });
+    
+    const sub = await Subject.findOne({ _id: req.body.id }).exec();
+    if (!sub) {
+        return res.status(204).json({ 'message': `The subject with id: ${req.body.id} does not exists!` });
     } 
 
-    const otherSubjects = data.subjects.find(sub => sub.id !== parseInt(req.body.id));
-    data.setSubject([...otherSubjects]);
-
-    res.json(subject);                                     // Sends the removed subject (from db)
+    const result = await sub.deleteOne({ _id: req.body.id});
+    res.json(result);                                     // Sends the removed subject (from db)
 }
 
 const getSubject = (req, res) => {
-    const subject = data.subjects.find(sub => sub.id === req.params.id);
+    if (!req.params?.id) return res.status(400).json({ 'message': 'Subject ID required!' });
+    const subject = Subject.findOne({ _id: req.params.id }).exec();    
     if (!req.params.id) {
         return res.status(400).json({ 'message': `The requested subject with id: ${req.params.is} does not exist!` });
     }
