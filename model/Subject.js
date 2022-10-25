@@ -7,9 +7,17 @@ const subjectSchema = new Schema({
         required: true
     },
     totalMarks: {
-        type: Number,                               // ----> For assessing, convert the final marks of 100! -> Divide into 3 parts!
+        type: Number,                                           // ----> For assessing, convert the final marks of 100! -> Divide into 3 parts!
         required: true
-    },             
+    },
+    inchargeName: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        maxlength: 50
+    },            
     date: {
         type: Date,
         default: Date.now

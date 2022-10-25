@@ -7,11 +7,14 @@ const marksSchema = new Schema({
     testResult: [{                                          // Of 80
         score: {
             type: Number, 
-            max: 80,
-            required: true
+            max: 80
+            // ,
+            // required: true
         },
-        date: Date,
-        required: true
+        date: {
+            type: Date,
+            default: Date.now
+        }
     }]
 })
 

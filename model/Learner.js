@@ -6,7 +6,7 @@ const Assessment = require('./Assessment');
 const Subject = require('./Subject');
 
 const learnerSchema = new Schema({
-    fisrtName: {
+    firstName: {
         type: String,
         required: true
     },
@@ -16,8 +16,8 @@ const learnerSchema = new Schema({
     },
     phoneNo: {
         type: Number,
-        min: 10,
-        max: 10
+        min: 1000000000,
+        max: 9999999999
     },
     email: {
         type: String,
@@ -33,9 +33,9 @@ const learnerSchema = new Schema({
             ref: Subject
         }
     ],
-    totalMarks: [                                   // This is a subject, dependent field! 
+    totalMarks: [                                           // This is a subject, dependent field! 
         {
-            type: Object.Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: Assessment
         }
     ]
