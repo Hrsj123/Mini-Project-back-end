@@ -8,5 +8,5 @@ Yet to add active functionality!
   <li>run "npm run dev" to start the project</li>
   <li>defalut PORT number of server is "3500"</li>
 </ul>
-
+<br/>
 <h4>Check out the master branch for some updates!</h4>
