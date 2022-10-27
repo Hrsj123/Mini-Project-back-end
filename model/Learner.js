@@ -38,7 +38,7 @@ const learnerSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: Assessment
         }
-    ]
+    ]               // "/learners/:learner/getMarks"        --> Somthing like this ig!
 })
 
 module.exports = mongoose.model('Learner', learnerSchema)

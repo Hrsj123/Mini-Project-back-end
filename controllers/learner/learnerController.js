@@ -11,7 +11,13 @@ const getAllLearners = async (req, res) => {
 
 // Get
 const getEnrolledSubjects = async (req, res) => {
-    // Add your code here!!! ○
+    // Input --> learner_id
+    if (!req.body?.id) return res.status(400).json({ 'message': 'Learner id is required!' });
+    
+    const learner = await Learner.findOne({ _id: req.body.id }).exec();
+    if (!learner) return res.status(400).json({ 'message': `The learner with ID: ${req.body.id} does not exist!` });
+
+    res.json(learner.subjectsList);     // array, or json; which is sent?
 }
 
 // Post
@@ -29,7 +35,7 @@ const registerLearner = async (req, res) => {
             phoneNo: req.body.phoneNo,
             email: req.body.email
         });
-        res.status(201).json(result);
+        res.status(201).json(`Successfully created: ${result}`);
     } catch (error) {
         res.status(400).json({ 'message': error });                
     }

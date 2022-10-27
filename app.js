@@ -4,19 +4,21 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 require('dotenv').config()
+// cors
+const cors = require('cors');
+const corsOptions = require('./config/corsOptions');
 
-
-const indexRouter = require('./routes/index');
+const indexRouter = require('./routes/index');        
 const usersRouter = require('./routes/users');
-const { send } = require('process');
+const { send } = require('process');      
 
 const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));    // Not needed yet! --> dynamic react files
 app.set('view engine', 'jade');
-// app.set('view engine', 'html');
-// app.engine('jsx', require('express-react-views').createEngine());
+
+app.use(cors(corsOptions));
 
 // middleware
 app.use(logger('dev'));

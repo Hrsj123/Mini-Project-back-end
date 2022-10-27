@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const tutorController = require('../controllers/tutor/tutorController');
 
-router.route('^/$')    // A single teacher exists!
-    .get(tutorController.getAllSubjects)
-    .post(tutorController.createSubject)
-    .put(tutorController.updateSubject)
-    .delete(tutorController.removeSubjects);
+// router.route('^/$')    // A single teacher exists!
+router.get('/getSubjects', tutorController.getAllSubjects);
+router.post('/signup', tutorController.createSubject);
+router.put('/update', tutorController.updateSubject);
+router.delete('/removeSubject', tutorController.removeSubjects);
 
 router.get('/:subName', tutorController.getSubject);
 
