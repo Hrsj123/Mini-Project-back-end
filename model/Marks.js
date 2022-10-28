@@ -3,19 +3,32 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;         
 
-const marksSchema = new Schema({
-    testResult: [{                                          // Of 80
-        score: {
+const Learner = require('./Learner');
+
+// For "different tests" for a praticular "subject" for a "single learner"       --> 
+const markSchema = new Schema({                    // Id of this "array" of marks schema --> _id
+    isCreated: {
+        type: Boolean,
+        required: true
+    },
+    subject: {
+        type: String,
+        required: true
+    },
+    marks: [{
+        score: {            //  12
             type: Number, 
-            max: 80
-            // ,
-            // required: true
+            max: 15,
+            default: 0,
+            required: true
         },
-        date: {
-            type: Date,
-            default: Date.now
+        testNumber: {               // To replace time! 
+            type: Number,
+            max: 12,
+            required: true
         }
     }]
-})
+});
 
-module.exports = mongoose.model('Marks', marksSchema)
+
+module.exports = mongoose.model('Marks', markSchema)

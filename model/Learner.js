@@ -27,18 +27,16 @@ const learnerSchema = new Schema({
             isAsync: false
         }
     },
-    subjectsList: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: Subject
-        }
-    ],
-    totalMarks: [                                           // This is a subject, dependent field! 
-        {
-            type: Schema.Types.ObjectId,
-            ref: Assessment
-        }
-    ]               // "/learners/:learner/getMarks"        --> Somthing like this ig!
+    subjectsList: [{
+        type: Schema.Types.ObjectId,
+        ref: Subject
+    }],
+    // An array of assessment (each element of the array for different subject)
+    totalMarks: {                                       // This is a subject, dependent field! 
+        type: Schema.Types.ObjectId,
+        ref: Assessment
+    }
+    // "/learners/:learner/getMarks"        --> Somthing like this ig!
 })
 
 module.exports = mongoose.model('Learner', learnerSchema)

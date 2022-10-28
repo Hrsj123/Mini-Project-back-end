@@ -32,6 +32,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/tutor', require('./routes/tutor'));
 app.use('/learners', require('./routes/learners'));
+app.use('/assessment', require('./routes/assessment'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
